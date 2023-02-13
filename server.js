@@ -1,5 +1,6 @@
 const express = require('express')
 const Ajv = require('ajv')
+const addFormats = require('ajv-formats')
 
 const searchSpec = require('./schema/search')
 
@@ -9,9 +10,11 @@ const PORT = 8000
 app.use(express.json())
 
 app.post('/validate', (req, res) => {
-    console.log(JSON.parse(atob(req.body.payload)))
+    console.log(req.body)
+    const spec = require(`./schema/${req.body.operation}`)
     const ajv = new Ajv()
-    const validate = ajv.compile(searchSpec)
+    addFormats(ajv)
+    const validate = ajv.compile(spec)
     const valid = validate(JSON.parse(atob(req.body.payload)))
     if (!valid) {
         errors = validate.errors.map(x => `path: ${x.schemaPath}, error: ${x.message}`)

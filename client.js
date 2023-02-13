@@ -4,11 +4,12 @@ $(() => {
             type: 'POST',
             url: '/validate',
             data: JSON.stringify({
-                operation: 'search',
+                operation: $('#operation').val(),
                 version: '1.1.0',
                 payload: btoa($('#payload').val())
             }),
             success: (data, status, xhttp) => {
+                $('#err-list').empty()
                 data.errors.map(x => {
                     $('#err-list').append(
                         $('<li>')
